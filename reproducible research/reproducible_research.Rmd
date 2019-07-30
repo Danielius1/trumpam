@@ -1,0 +1,134 @@
+---
+title: "Darbo užmokestis Lietuvoje"
+author: |
+  | Vardas Pavardė
+  | StudID, Kursas x
+  | Vilniaus Universitetas (EVAF)
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+output:
+  pdf_document:
+    includes:
+      in_header: header_lt_text.txt
+    number_sections: yes
+    toc: no
+geometry: left=3cm,right=3cm,top=2cm,bottom=2cm
+editor_options:
+  chunk_output_type: console
+subtitle: 2019 metų pirmojo ketvirčio analizė
+bibliography: bibliography.bib
+---
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, cache = TRUE)
+```
+
+```{r, echo=FALSE}
+if(!file.exists("data")) dir.create("data")
+if(!file.exists("figures")) dir.create("figures")
+```
+
+```{r, echo=FALSE, message=FALSE}
+if(!require(tidyverse)) install.packages("tidyverse"); require(tidyverse)
+if(!require(rsdmx)) install.packages("rsdmx"); require(rsdmx)
+if(!require(reshape2)) install.packages("reshape2"); require(reshape2)
+if(!require(knitr)) install.packages("knitr"); require(knitr)
+```
+
+```{r, echo=FALSE, message=FALSE}
+#duomenų importas
+S3R0052_M3060802 <- readSDMX(providerId = "LSD", resource = "data", flowRef = "S3R0052_M3060802" , dsd = TRUE)
+S3R0052_M3060802 <- as.data.frame(S3R0052_M3060802, labels=TRUE)
+#duomenų importas
+S3R0050_M3060836_1 <- readSDMX(providerId = "LSD", resource = "data", flowRef = "S3R0050_M3060836_1" , dsd = TRUE)
+S3R0050_M3060836_1 <- as.data.frame(S3R0050_M3060836_1, labels=TRUE)
+```
+
+```{r, echo=FALSE}
+df_1 <- S3R0052_M3060802 %>%
+    filter(LYGINIMAS=="palyg_al",
+           LAIKOTARPIS=="2018") %>%
+    mutate(obsValue=obsValue-100)%>%
+    select(3,6,12) %>%
+    spread(darboM2040404_label.lt, obsValue)
+
+df_2 <- S3R0050_M3060836_1 %>%
+    filter(EVRK2M3060207=="TOTAL",
+           LAIKOTARPIS=="2018")%>%
+    select(3,6,12)%>%
+    spread(darboM3060321_label.lt, obsValue)
+```
+
+## Bruto darbo užmokestis šalies ūkyje per 2018 metus padidėjo `r df_1[2,2] ` proc.
+
+* 2018 m. vidutinis mėnesinis bruto darbo užmokestis šalies ūkyje, įskaitant individualiąsias įmones, sudarė `r df_2[4,2]` EUR ir, palyginti su 2017 m., padidėjo `r df_1[2,2] ` proc.: viešajame sektoriuje jis sudarė `r df_2[5,2]`  EUR ir buvo `r df_1[3,2] ` proc. didesnis, privačiajame – `r df_2[3,2]`  EUR ir buvo `r df_1[1,2] ` proc. didesnis.
+
+```{r, echo=FALSE, fig.align="center", fig.height=4}
+df_3 <- S3R0052_M3060802 %>%
+    filter(LYGINIMAS=="palyg_al",
+           Ekon_sektorM2040802=="0in",
+           LAIKOTARPIS>="2014")%>%
+    mutate(obsValue=obsValue-100)%>%
+    select(3,11,12)
+
+ggplot(df_3, aes(LAIKOTARPIS, obsValue,col=darboM2040404_label.lt, group=darboM2040404_label.lt))+
+    geom_line()+
+    geom_point()+
+    scale_y_continuous(limits = c(0,15))+
+    labs(title="Vidutinio menesinio darbo uzmokescio pokytis salies ukyje 2014 2018 m.",
+         subtitle="Palyginti su ankstesniais metais",
+         x=NULL,
+         y="Procentai")+
+    theme(legend.position = "top")+
+    scale_color_discrete("")
+
+ggsave("figures/figure_1.png", device="png")
+```
+## Lentelės
+
+```{r, echo=FALSE}
+table_1 <- df_3 %>%
+    dcast(darboM2040404_label.lt~LAIKOTARPIS, value.var ="obsValue")%>%
+    rename("var/metai"=darboM2040404_label.lt)
+kable(table_1)
+
+```
+
+## Teksto formatavimas
+Tekstas gali būti *italic*, arba **bold**, su nuoroda [LSD](https://osp.stat.gov.lt/informaciniai-pranesimai?eventId=187547), bet gali turėti ir matemtines formules $E=\frac{2^{a-b}}{C_\mu}$, kurios gali buti inline arba:
+
+$$E=\frac{2^{a-b}}{C_\mu}$$
+Taip pat galima turėti sąrašus
+
+* vienas
+* du
+    * du su puse
+    * du ir trys ketv
+* trys
+
+arba 
+
+1. vienas
+2. du
+3. trys
+
+Galima cituoti tekste @stigler1946economics naudojamas nes..... jis skaitė @lee1999wage naudojamas nes.....jam padarė įspūdį @card1995time naudojamas nes....
+
+## Tiesinės regresijos
+
+```{r}
+library(xtable)
+fit <- lm(Ozone ~ Wind + Temp+ Solar.R, data=airquality)
+fit <- xtable(summary(fit))
+kable(fit)
+```
+
+
+```{r}
+library(broom)
+fit <- lm(Ozone ~ Wind + Temp+ Solar.R, data=airquality)
+kable(tidy(fit))
+```
+
+
+## Literatūra 
+(spausdina automatikšai pačioje pabaigoje)
+

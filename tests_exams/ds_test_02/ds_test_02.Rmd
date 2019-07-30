@@ -1,0 +1,92 @@
+---
+title: "2 Testas" #nekeisti
+author: "Vardas Pavardė, StudID" 
+institute: "Vilniaus Universitetas (EVAF)" #nekeisti 
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M')`"#nekeisti
+output: #nekeisti
+  html_document: #nekeisti
+    number_sections: true #nekeisti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, error = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Apie testą
+Šio trumpo testo metu Jūsų tiklsas išanalizuoti darbo užmokesčio pajamų (compensation of employees, kuris susideda iš *Wages and salaries* bei *Employers' social contributions*) bei bendrojo vidaus produkto santykį. Šis santykis parodo, kiek procentų sukurto ekonominio šalies produkto ("pyrago") atiteko dirbantiems pagal darbo sutartis. Ši statistika neapima pajamų, kurios gaunamos vykdant individualią veiklą, arba pagal verlso liudijimus.
+
+Prieš pradedant:
+
+* Ant desktopo sukurkite direktoriją "ds_test_02", į ją išsaugokite šį dokumentą pakeisdami jo pavadinimą į "StudNr_Vardas_Pavardė.Rmd", bei atitinkamai pakeisdami viršuje esančius laukelius: "author: ..."
+* Sumegzkite iškart šį dokumentą į .html failą ir įsitikinkite, jog viskas veikia gerai, tik tada pradėkite spręsti uždavinius.
+
+## Užduotis
+Žemiau esančiame R programai skirtame laukelyje surašykite visus paketus. Kodas turi patikrinti, ar R paketas egzistuoja, jeigu ne, jį instaliuoti ir atitinkamai užloadinti. Paketai pasirenkami savarankiškai, pagal individualius poreikius.
+
+```{r}
+# kodas
+# kodas
+# kodas
+```
+
+
+## Užduotis - duomenų importas
+Importuokite ketvirtinius nacionalinių sąskaitų duomenis iš Eurostat (namq_10_gdp). Duomenų importavimui pageidautina, jog taikytūmėte filtrą, tai pagreitins duomenų parsiuntimą. Jeigu atitinkamas filtravimas nepavyksta parsisiunčiant duomenis, filtravimą atlikite sekančiame žingsnyje iš jau parsiustų duomenų.
+
+* Geo: Estonia, Latvia, Lithuania
+* Compensation of employees 
+* Seasonally and calendar adjusted data
+* Time since the year 2000
+* Percentage of gross domestic product (GDP) 
+
+
+```{r}
+# kodas
+# kodas
+# kodas
+```
+
+## Užduotis - duomenų paruošimas
+Paruoškite duomenis grafikų braižymui. Jeigu netaikėte filtravimo 1 žingsnyje, taikykite filtravimą dabar.
+Duomenys:
+
+* Geo: Estonia, Latvia, Lithuania
+* Compensation of employees 
+* Seasonally and calendar adjusted data
+* Time since the year 2000
+* Percentage of gross domestic product (GDP) 
+
+
+```{r}
+# kodas
+# kodas
+# kodas
+```
+
+
+## Užduotis
+Apskaičiuokite, koks buvo vidutinis kiekvienos šalies darbo užmokesčio ir BVP santykis nuo 2000 iki naujausio turimo periodo. Kodas turėtų rezultuoti išraiškoje, iš kurios būtų matomas visų trijų šalių naudojamo periodo vidurkis.
+
+```{r}
+# kodas
+# kodas
+# kodas
+```
+
+## Užduotis - nubraižykite darbo pajamų ir BVP santykio grafiką
+Nepamirškite x,y ašių užpavadinimo bei antraščių. X ašis turėtų būti suskaidyta pagal metus, formatu "%Y"
+
+```{r, fig.width=10}
+# kodas
+# kodas
+# kodas
+```
+
+## Darbo užbaigimo ir ship'inimo instrukcija:
+* Sumegzkite šį dokumentą į `html`. 
+* Savo Github paskyroje sukurkite repo "ds_test_02"
+* Pushinkit lokalią repo į Github. Direktorijoje turi būti 2 failai: "StudNr_Vrdas_Pavardė.Rmd" ir "StudNr_Vrdas_Pavardė.html"
+* Įsitikinkite jog Githube guli repo kopija ir repo url įrašykite į google docs H stulpelį: https://docs.google.com/spreadsheets/d/1H_ts3wTKYZ4rocmFseR2YJtZHfhJ543MUWsTTa7x5Kc/edit?usp=sharing
+
+
+

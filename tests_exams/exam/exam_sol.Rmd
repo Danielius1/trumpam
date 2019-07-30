@@ -1,0 +1,173 @@
+---
+title: "Egzaminas" #nekeisti
+author: "Vardas Pavardė, StudID" 
+institute: "Vilniaus Universitetas (EVAF)" #nekeisti 
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M')`"#nekeisti
+output: #nekeisti
+  html_document: #nekeisti
+    number_sections: TRUE #nekeisti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, error = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Prieš pradedant
+* Ant desktopo sukurkite direktoriją "exam", į ją išsaugokite šį dokumentą pakeisdami jo pavadinimą į "StudNr_Vardas_Pavarde.Rmd" (nenaudokite lt rašmenų) bei atitinkamai pakeisdami viršuje esančius laukelius: "author: ..."
+* Sumegzkite iškart šį dokumentą į .html failą ir įsitikinkite, jog viskas veikia gerai, tik tada pradėkite spręsti uždavinius.
+
+
+# Pasiruošimas
+Šioje kodo dalyje surašykite visus paskesnėse dalyse naudojamus R paketus. Kodas turi patikrinti, ar paketas yra instaliuotas, jeigu ne, instaliuoti bei užloadinti. Jeigu darbo eigoje prireikia naujų paketų, nepamirkite čia juos įrašyti.
+
+```{r, echo=TRUE, message=FALSE}
+library(eurostat)
+library(tidyverse)
+library(knitr)
+```
+
+
+# Istorija
+Šiuo metu Jūs darbuojatės NVO "Stop skurdas". Koks tai "influenceris" patrolino visuomenę (galimai apmokėtas privačių pensijų fondų), jog Sodroje kaupti pensijai neapsimoka ir kaip pvz. pateikė savo mamulę, gaunančią vos 221 eurą per mėnesį. 
+
+Komentaruose pasipylė aibė pasisakymų, jog jeigu neturėtume "pašalpinių" armijos ir jiems skirtus pinigus skirtume pensininkams, tai pensininkai gyventų "oriau".  
+
+Jums tokie argumentai sukelia daug abejonių. Kadangi Jūs kažkaip išgyvenote patrakėlio Mundeikio duomenų analizės įvadą, Jūs nusprendžiate pateikti tam tikrus faktus viešai diskusijai. Šių faktų generavimas ir yra Jūsų egzamino užduotis.
+
+
+## Duomenų importas
+Importuokite duomenis apie tai, kiek Lietuva ir ES-28 skiria % BVP socialinei paramai. Kadangi datasetas yra didelis, rekomenduoju parsisiųsti tik reikalingus duomenis. 
+
+[Pagalba: "gov_10a_exp", reikalingos išlaidų rūšys "Social protection", "Old age", "Sickness and disability"]
+
+```{r}
+gov_10a_exp <- get_eurostat("gov_10a_exp", filters = list(cofog99=c("GF10", "GF1001", "GF1002"),
+                                                        geo=c("EU28", "LT"),
+                                                          na_item="TE",
+                                                          sector="S13",
+                                                          unit="PC_GDP"))
+```
+
+## Duomenų apdorojimas
+Kadangi "pašalpiniai" gauna įvairią socialinę pagalbą (pvz., lengvatas būsto šildymui, vaikų maitinimui mokykloje ir t.t.), šioje dalyje pabandysime iš visų išlaidų socialinei apsaugai atimti pensijas ir ligos pašalpas, o likutį pavadinsime `pasalpa`. 
+
+Sukurkite nauja dataframe objektą, kuriame būtų LT ir EU28 laiko eilutės (nuo 2004 metų) su 2 išlaidų sritimis: pasalpa (apskaičiuota) bei išlaidomis pensijoms.
+
+```{r}
+df <- gov_10a_exp %>% 
+    filter(time>="2004-01-01")%>%
+    spread(cofog99, values)%>%
+    mutate(pasalpa=GF10-GF1001-GF1002)%>%
+    select(geo, time, GF1002, pasalpa)%>%
+    gather(cofog99, values, 3:4)
+```
+
+## Nubraižykite grafiką
+
+* Nubraižykite prieš tai žingsnyje apdorotus duomenis linijine diagrama su taškais (shape) 
+* Spalvą priskirkite geo
+* Taškų (shape) formą priskirkite išlaidų rūšims. 
+* Tikėtina Jums reikės googlinti arba ieškoti stackoverflow, kaip pranešti ggplot2, kaip yra sugrupuoti duomenys (jeigu norite jog visos 4 linijos būtų viename grafike), alternatyviai galite skaidyti grafiką į dvi dalis, pagal išlaidų rūšis (tada skaidymas turi vykti naudojant vieną iš ggplot2 komandų)
+* Nepamirškite tvarkingo apipavidalinimo (ašys, antraštės ir t.t.)
+
+```{r}
+ggplot(df, aes(time, values,col=geo,shape=cofog99))+
+    geom_line(aes(group=interaction(cofog99, geo)))+
+    geom_point(size=3)+
+    labs(title= "General government expenditure as % of GDP",
+         subtitle="Source: Eurostat (gov_10a_exp)",
+         x="Time",
+         y="Percent of GDP")
+```
+
+
+
+## Apskaičiuokite
+
+Taip pat, Jūs nusprendėte pateikti lentelę, kurioje būtų matyti kiek % BVP pensijoms ir pašalpoms skiria EU28 ir Lietuva. 
+Visgi vien tik procentinės išraiškos nėra labai informatyvios, tad Jūs nusprendžiate pateikite lentelę (dataframe) susidedančią iš 2 eilučių (cofog99) ir 4 stulpelių:
+
+* ES28 išlaidos % BVP
+* LT išlaidos % BVP
+* skirtumas procentiniais punktais (primenu, 1.9%-1.5%=0.4 proc.punkto)
+* trečio stulpelio reikšmes sudauginkite su Lietuvos 2017m BVP (= 41857 mln eur), nes norite žinoti, kiek mln eurų reiktų skirti šioms sritims, tam kad pasiektume ES vidurkį
+* PERSPĖJIMAS: kai skaičiuosite reikalingas lėšas, pasitikrinkite, ar teisingai skaičiuojate  kai sudauginate su proc. punktais! :)
+
+```{r}
+kable(df %>% filter(time=="2017-01-01")%>%
+    spread(geo, values)%>%
+    select(-time)%>%
+    mutate(diff=EU28-LT,
+           mlnEur=diff *41857/100))
+```
+
+
+## Grafikas 2 
+
+Pastebėję, jog socialinės išlaidos labai skiriasi tarp LT is ES28, Jūs nusprendėte nubraižyti stulpelinį grafiką, kuriame būtų pavaizduotos visų ES (t.y. 28!) šalių išlaidos socialiniai sričiai % nuo BVP. Naudokite 2017 metų rodiklius. Tam jog matytųsi ES28 vidurkis nubraižykite jį į grafiką kaip horizontalią liniją.
+
+Jums gali reikėti atsisiųsti reikiamą Eurostat dataset iš naujo. 
+Stulpeliai turėtų būti surikiuoti didėjančia tvarka, jų viršuje pateikiamos  stulpelių reikšmės.
+
+Grafikas turėtų atrodyti daugmaž taip: https://i2.wp.com/lithuanian-economy.net/wp-content/uploads/2019/03/private_expenditue_MTEP_2017.jpeg?resize=768%2C427
+
+
+```{r}
+gov_10a_exp_2 <- get_eurostat("gov_10a_exp", filters = list(cofog99="GF10",
+                                                          na_item="TE",
+                                                          sector="S13",
+                                                          time="2017",
+                                                          unit="PC_GDP"))
+
+df_2 <- gov_10a_exp_2%>%filter(geo %in% c("BE","BG","CZ","DK","DE","EE","IE","EL","ES","FR","HR","IT","CY","LV","LT","LU","HU","MT","NL","AT","PL","PT","RO","SI","SK","FI","SE","UK"))
+
+eu <- gov_10a_exp_2%>%filter(geo=="EU28")
+
+ggplot(df_2, aes(reorder(geo, values), values))+
+    geom_bar(stat="identity", 
+             fill="steelblue")+
+    geom_hline(yintercept = eu$values)+
+    annotate("text", x = 4, y=20, label = "EU-28")+
+    labs(title="Viešojo sektoriaus išlaidos socialinei apsaugai, % BVP, 2017m.",
+         subtitle="Šalintis: Eurostat (gov_10a_exp)",
+         x="Šalys",
+         y="% BVP")+
+   geom_text(aes(label = values, y = values), vjust=-0.5, size = 3)
+    
+```
+
+
+## Vertinimas
+Pateikite trumpą situacijos vertinimą remiantis iki šiol atlikta duomenų analizę. Pateikite savo įžvalgas, kaip būtų galima spręsti žemų pensijų  problemas ateityje. Drąsiai galite remtis Europos Komisijos ataskaita bei rekomendacijomis Lietuvai. 
+
+* Rekomendacija: https://ec.europa.eu/info/sites/info/files/file_import/2019-european-semester-country-specific-recommendation-commission-recommendation-lithuania_en.pdf
+* Ataskaita : https://ec.europa.eu/info/sites/info/files/file_import/2019-european-semester-country-report-lithuania_lt.pdf
+
+```{r, eval=TRUE}
+#Parašykite apie 150 (+- 20) žodžių. 
+#Rašykite VIETOJ Lore ipsum... teksto t.y. tarpe tarp abiejų kabučių.
+#Jeigu norite žinoti kiek žodžių parašėte, galite runninti tik šit snippet' jo kampytyje nuspaudę ant žalio trikampio rodančio į dešinę
+
+str1 <- 
+"
+
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque luctus nisi sed odio rhoncus semper. Nam sit amet neque ac risus hendrerit lobortis a vitae velit. Donec tincidunt sapien ligula, at tincidunt enim aliquam non. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur tempus ex non velit ultrices lacinia. Aenean pulvinar nisl in quam bibendum, at cursus massa auctor. Quisque posuere orci at urna molestie varius. Proin at iaculis libero. Proin consequat, mauris eu convallis elementum, tortor leo ullamcorper lectus, eu euismod odio justo id nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit odio rhoncus semper.
+
+
+"
+sapply(strsplit(str1," "),length)
+```
+
+
+
+
+
+
+
+## Darbo užbaigimo ir ship'inimo instrukcija:
+* Sumegzkite šį dokumentą į `html`, jeigu Jūsų kode yra klaidų ir sumezgimas neveikia, išsaugokite šį failą tiesiog "File -> save"
+* Savo Github paskyroje sukurkite repo "exam"
+* Pushinkit lokalią repo į Github. Direktorijoje turi būti 2 failai: "StudNr_Vardas_Pavardė.Rmd" ir "StudNr_Vardas_Pavardė.html"
+* Įsitikinkite jog Githube guli repo kopija ir repo url įrašykite į google docs J stulpelį: https://docs.google.com/spreadsheets/d/1H_ts3wTKYZ4rocmFseR2YJtZHfhJ543MUWsTTa7x5Kc/edit?usp=sharing
+

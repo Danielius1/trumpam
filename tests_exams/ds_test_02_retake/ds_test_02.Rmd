@@ -1,0 +1,94 @@
+---
+title: "2 testas - retake" #nekeisti
+author: "Vardas Pavardė, StudID" 
+institute: "Vilniaus Universitetas (EVAF)" #nekeisti 
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M')`"#nekeisti
+output: #nekeisti
+  html_document: #nekeisti
+    number_sections: true #nekeisti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, error = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+# Prieš pradedant
+
+* Ant desktopo sukurkite direktoriją "ds_test_02_retake", į ją išsaugokite šį dokumentą pakeisdami jo pavadinimą į "StudNr_vardas_pavarde.Rmd" (nenaudodami lietuviškų rašmenų) bei atitinkamai pakeisdami viršuje esančius laukelius: "author: ..." (čia galima su lt rašmenimis)
+* Sumegzkite iškart šį dokumentą į .html failą ir įsitikinkite, jog viskas veikia gerai, tik tada pradėkite spręsti uždavinius.
+
+## Užduotis
+Žemiau esančiame R programai skirtame laukelyje surašykite visus paketus kurie reikalingi Jūsų parašytam kodui. Kodas turi patikrinti, ar R paketas egzistuoja, jeigu ne, jį instaliuoti ir atitinkamai užloadinti. Paketai pasirenkami savarankiškai, pagal individualius poreikius. Nenaudojamų paketų užloadinti nereikia. Tam kad veiktų žemiau esantys code-chunk'ai, runninkite šį chunką (žalias trikampis chunk'o kampe)
+
+```{r, echo=TRUE, message=FALSE}
+# kodas
+# kodas
+# kodas
+```
+
+
+## Užduotis - duomenų importas
+
+Importuokite iš Eurostat "Unemployment by sex and age - quarterly average" duomenis.
+```{r}
+# kodas
+# kodas
+# kodas
+```
+
+## Užduotis - duomenų paruošimas
+
+Paruoškite, jog jūsų darbinis dataframe (nepperrašykite originalaus atsisiųsto df) turėtų šiuos duomenys:
+
+* Age: Total
+* Geo: Estonia, Latvia, Lithuania
+* Sex: Total
+* Seasonally adjusted data, not calendar adjusted data 
+* Time: since the year 1998
+* Percentage of active population 
+
+
+```{r}
+# kodas
+# kodas
+# kodas
+```
+
+
+## Užduotis
+Apskaičiuokite, koks buvo žemiausias kiekvienos šalies nedarbo lygis 1998-2019 metu periodu. Apskaičiuotas rezultatas turėtų būti išsaugomas atskirame objekte. R kodas turi atspausindti lentelę, kurioje būtų matyti visų trijų pasirinktų šalių žemiausios reikšmės.
+
+```{r}
+# kodas
+# kodas
+# kodas
+```
+
+## Grafiko braižymas
+
+Nubraižykite nedarbo lygio linijinį grafiką, kur kiekviena šalis turėtų savo atskirą liniją.
+Nubrėžkite horizontalias linijas, atspindinčias prieš tai uždavinyje apskaičiuotus vidurkius (dėl aiškumo, suderinkite spalvas).
+Nepamirškite x,y ašių užpavadinimo bei antraščių. X ašis turėtų būti suskaidyta pagal metus, formatu "%Y"
+```{r, fig.width=10}
+# kodas
+# kodas
+# kodas
+```
+
+Užduotis
+
+Atsakykite į klausimą: ar Baltijos šalims 2018(!!!) metais pasiekus ekonomikos ciklo pakilimo tašką, nedarbo lygis Baltijos šalyse buvo toks žemas, koks jis buvo prieš pat ekonominės krizės pradžią? Pakomentuokite keliais sakiniais, kodėl galimai yra kaip yra? Jeigu sunku įžiūrėti, galite nusibraižyti horizontalią liniją virųje esančiame grafike.
+
+```{r, eval=FALSE}
+# kodas
+# kodas
+# kodas
+```
+
+
+## Darbo užbaigimo ir ship'inimo instrukcija:
+* Sumegzkite šį dokumentą į `html`. 
+* Savo Github paskyroje sukurkite repo "ds_test_02_retake"
+* Pushinkit lokalią repo į Github. Direktorijoje turi būti 2 failai: "StudNr_Vrdas_Pavarde.Rmd" ir "StudNr_Vrdas_Pavardė.html"
+* Įsitikinkite jog Githube guli repo kopija ir repo url įrašykite į google docs H stulpelį: https://docs.google.com/spreadsheets/d/1H_ts3wTKYZ4rocmFseR2YJtZHfhJ543MUWsTTa7x5Kc/edit?usp=sharing

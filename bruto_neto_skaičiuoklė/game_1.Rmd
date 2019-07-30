@@ -1,0 +1,82 @@
+---
+title: "GAME"
+subtitle: "Bruto-Neto skaičiuoklė"
+author: "Justas Mundeikis"
+institute: "VU EVAF"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Bruto - Neto
+* tax.lt : Atlyginimo ir mokesčių skaičiuoklė generuoja bruto - neto
+* Uždavinys: parašyti funkciją, kuri paskaičiuotų neto atlyginimą
+* NPD automatinis, jokio papildomo kaupimo pensijai
+
+Pagalba:
+
+* E-Seimas: Lietuvos Respublikos gyventojų pajamų mokesčio įstatymas
+* funkcija turi atsižvelgt į 
+* "Sodros įmokų grindis" (taikoma ir PSD)
+* "Sodros" įmokų lubas  (netaikoma PSD)
+* VDU naudoti 2019 prognozinį VDU, FinMin.lt
+* tax.lt neteisingai skaičiuoja grindis ir lubas!
+
+## Bruto - Neto
+```{r, eval=FALSE, echo=TRUE}
+bruto_neto <- function(x) {
+    # baziniai parametrai
+    # NPD
+    # Mokestinė bazė
+    # GPM
+    # SODRA
+    # PSD
+    # neto 
+}
+```
+
+## Šaltiniai
+* [Tax.lt skaičiuoklė](https://www.tax.lt/skaiciuokles/atlyginimo_ir_mokesciu_skaiciuokle)
+* [GPM įstyatymas](https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.171369/asr)
+* [VMI](https://www.vmi.lt/cms/documents/10174/8274962/KD-8860+tarifai+nuo+2019+met%C5%B3/f4d12f92-cb8c-4c5a-bd59-f9317c9507d9)
+* [Baziniai dydžiai](https://www.sodra.lt/lt/situacijos/statistika/pagrindiniai-socialiniai-rodikliai)
+* [2019 prog VDU](http://finmin.lrv.lt/lt/aktualus-valstybes-finansu-duomenys/ekonomines-raidos-scenarijus)
+
+## Funkcija    
+```{r, echo=TRUE}
+bruto_neto <- function(x) {
+    # Baziniai parametrai
+    GPM_1 <- 0.20;GPM_2 <- 0.27;PSD <- 0.0698;
+    SODRA <- 0.1252;MMA <- 555;VDU <- 1283.2;
+    lubos <- 10*VDU;NPD <- 300;NPD_coef <- 0.15;
+    bruto <- x
+    
+    npd <- max(NPD - NPD_coef* max(0,(bruto - MMA)),0)
+    mok_baz <- max(0,(bruto-npd))
+    gpm <- ifelse(bruto<=lubos, mok_baz*GPM_1, 
+                  lubos *GPM_1+(bruto-lubos)*GPM_2) 
+    sodra <- min(bruto*SODRA, lubos * SODRA)
+    psd <- bruto*PSD
+    neto <- bruto - gpm - sodra - psd
+    neto
+} 
+```
+
+
+
+
+## Bruto - Neto
+```{r, collapse=TRUE, echo=TRUE}
+bruto_neto(10)
+bruto_neto(100)
+bruto_neto(1000)
+bruto_neto(10000)
+bruto_neto(100000)
+```
+

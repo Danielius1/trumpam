@@ -1,0 +1,150 @@
+    ---
+title: "Išankstinis egzaminas" #nekeisti
+author: "Vardas Pavardė, StudID" 
+institute: "Vilniaus Universitetas (EVAF)" #nekeisti 
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M')`"#nekeisti
+output: #nekeisti
+  html_document: #nekeisti
+    number_sections: FALSE #nekeisti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, error = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Apie Egzaminą
+Prieš pradedant:
+* Ant desktopo sukurkite direktoriją "pre_exam", į ją išsaugokite šį dokumentą pakeisdami jo pavadinimą į "pre_exam_StudNr_Vardas_Pavardė.Rmd", bei atitinkamai pakeisdami viršuje esančius laukelius: "author: ..."
+* Sumegzkite iškart šį dokumentą į .html failą ir įsitikinkite, jog viskas veikia gerai, tik tada pradėkite spręsti uždavinius.
+
+## Pasiruošimas
+Šioje kodo dalyje surašykite visus paskesnėse dalyse naudojamus R paketus. Kodas turi patikrinti, ar paketas yra instaliuotas, jeigu ne, instaliuoti bei užloadinti. Jeigu darbo eigoje prireikia naujų paketų, nepamirkite čia juos įrašyti.
+
+```{r, echo=TRUE, message=FALSE}
+#kodas
+#kodas
+#kodas
+```
+
+
+## Info
+Lietuvoje minimali mėnesinė alga (MMA) nustatoma taikant šią formulę:
+einamųjų metų vidutinio darbo užmokesčio prognozė padauginama iš koeficiento, kur koeficientas yra lygus 5 didžiausią minimalaus mėnesio atlyginimo ir vidutinio darbo užmokesčio santykį turinčių ES valstybių (imant jų 3 metų santykių vidurkius) vidurkiui (žr. LB atsakymą Trišalei tarybai (6 punktas)).
+
+Jūsų užduotis
+* parašyti R kodą, kuris importuotų reikalingus apskaičiavimui duomenis iš Eurostat
+* apskaičiuotų koeficientą, kuris bus taikomas kitų metų MMA nustatymui
+* Suradus Finansų ministerijos tinklapyje einamųjų metų VDU prognozės rodiklį, apskaičiuoti, koks turėtų būti MMA 2020m.
+
+### Duomenų importas
+(Pagalba: Monthly minimum wage as a proportion of average monthly earnings (%) - NACE Rev. 2)
+```{r}
+#kodas
+#kodas
+#kodas
+```
+
+### LB dokumento 5 lentelės atgaminimas
+Apdorokite duomenis, jog jie tiktų tolimesnei analizei. Transformuotas dataframe objektas turėtų atitikti LB dokumento paskutinę lentelę (be paskutinio stulpelio).
+Pagalba: 
+
+* naudoti "Industry, construction and services..." sektoriai nuo B iki S. 
+* paskutiniame žingsnyje išsaugoti objektą: "df<- as.data.frame(...)" nes `eurostat` pakeičia dataframe objekto klasę į "tibble"
+
+```{r}
+#kodas
+#kodas
+#kodas
+```
+
+### Apskaičiuokite 2020m naudotiną koeficientą
+2020m koeficientui apskaičiuoti naudoti 2015-2017m laiko eilutes. Jeigu nepavyksta, peršokite šią dalį ir sekančiame žingsnyje naudokite skaičių 999.
+Patarimas: pravartu pasitikrinti, ar pakeitus laiko nustatymus gaunami tokie pat rezultatai, kaip ir LB atsakyme Trišalei tarybai, taip verifikuojant, jog metodas taikomas toks pats.
+
+```{r}
+#kodas
+#kodas
+#kodas
+```
+
+### MMA 2020m apskaičiavimas
+Priešingai nei LB metodokoje, Trišalė taryba nustato sekančių metų MMA sudaugindama koeficientą su einamųjų metų VDU prognoze. Apskaičiuokite 2020m. MMA.
+
+Pastaba: finmin.lt susiraskite VDU po reformos, nes tame pačiame puslapyje (Ekonominės raidos scenarijus) pateikiami du rodikliai. 
+```{r}
+#kodas
+#kodas
+#kodas
+```
+
+### Kiek procentų MMA padidėtų nustačius Jūsų MMA, lyginant su 2019m galiojančiu MMA?
+```{r}
+#kodas
+#kodas
+#kodas
+```
+
+### Nubraižykite Lietuvos, Latvijos ir Estijos MMA/VDU santykio grafiką nuo 2008m
+
+Paruoškite atskirą data frame, pritaikytą nubraižyti tik šių trijų šalių grafikui
+```{r}
+#kodas
+#kodas
+#kodas
+```
+
+Kodas grafiko braižymui
+```{r, fig.align='center', fig.width=10}
+#kodas
+#kodas
+#kodas
+```
+
+### Nubraižykite du ES šalių MMA stulpelinus grafikus
+Naudokitės earn_mw_cur lentele.
+
+* MMA išreikštas eurais, ES šalims, stulpeliai didėjančia tvarka
+Kodas duomenų importui ir grafiko braižymui
+```{r, fig.align='center', fig.width=10}
+#kodas
+#kodas
+#kodas
+```
+
+* MMA išreikštas perkamosios galios standartu (PPS įvertina kainas skirtingose šalyse), ES šalims, stulpeliai didėjančia tvarka
+Kodas duomenų importui ir grafiko braižymui
+```{r, fig.align='center', fig.width=10}
+#kodas
+#kodas
+#kodas
+```
+
+
+### Vertinimas
+Įvertinkite tokį minimalios mėnesinės algos augimo tempą. Pateikite galimus pliusus, minusus. Jeigu reikia, palyginkite MMA ir VDU paskutinių metų augimo raidą.
+Jeigu prieš tai uždavinyje naudojote koeficientą 999, darykite prielaidą šioje dalyje, jog metinis MMA augimas siekia 10%.
+
+```{r, eval=TRUE}
+#Parašykite apie 200 (+- 20) žodžių. 
+#Rašykite VIETOJ Lore ipsum... teksto t.y. tarpe tarp abiejų kabučių.
+#Jeigu norite žinoti kiek žodžių parašėte, galite runninti tik šit snippet' jo kampytyje nuspaudę ant žalio trikampio rodančio į dešinę
+
+str1 <- 
+"
+
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque luctus nisi sed odio rhoncus semper. Nam sit amet neque ac risus hendrerit lobortis a vitae velit. Donec tincidunt sapien ligula, at tincidunt enim aliquam non. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur tempus ex non velit ultrices lacinia. Aenean pulvinar nisl in quam bibendum, at cursus massa auctor. Quisque posuere orci at urna molestie varius. Proin at iaculis libero. Proin consequat, mauris eu convallis elementum, tortor leo ullamcorper lectus, eu euismod odio justo id nulla. Suspendisse eget aliquam tortor. Vivamus at dolor lobortis, feugiat quam ut, porta lorem. Ut non suscipit ante, varius facilisis risus. Fusce vel varius vel varius dui. Vestibulum ut ullamcorper urna. Phasellus iaculis eget nisi ac dictum. Phasellus consequat felis enim, ac ultricies libero vulputate vitae. Integer mollis sollicitudin volutpat. Sed et maximus lectus. Vestibulum vitae diam et odio pellentesque fermentum. Nunc non felis. Ut non suscipit ante, varius facilisis risus. Fusce vel varius dui. Vestibulum ut ullamcorper urna. Phasellus iaculis eget nisi ac dictum. Phasellus consequat felis enim, ac ultricies libero vulputate vitae. Integer mollis sollicitudin volutpat. Sed et maximus lectus. Vestibulum vitae diam et odio pellentesque fermentum. Nunc non felis.
+
+
+"
+sapply(strsplit(str1," "),length)
+```
+
+
+## Darbo užbaigimo ir ship'inimo instrukcija:
+* Sumegzkite šį dokumentą į `html`, jeigu Jūsų kode yra klaidų ir sumezgimas neveikia, išsaugokite šį failą tiesiog "File -> save"
+* Savo Github paskyroje sukurkite repo "pre_exam"
+* Pushinkit lokalią repo į Github. Direktorijoje turi būti 2 failai: "pre_exam_StudNr_Vardas_Pavardė.Rmd" ir "pre_exam_StudNr_Vardas_Pavardė.html"
+* Įsitikinkite jog Githube guli repo kopija ir repo url įrašykite į google docs I stulpelį: https://docs.google.com/spreadsheets/d/1H_ts3wTKYZ4rocmFseR2YJtZHfhJ543MUWsTTa7x5Kc/edit?usp=sharing
+
+
